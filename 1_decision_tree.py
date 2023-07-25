@@ -1,28 +1,29 @@
+# Kaggle Intro to Machine Learning
+
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 
 # Path of the file to read
-iowa_file_path = 'ABC.csv'
-home_data = pd.read_csv(iowa_file_path)   
+file_path = 'Football_teams.csv'
+football_data = pd.read_csv(file_path)   
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # Specify Prediction Target
-y = home_data.SalePrice
+y = football_data.Rating
 
-#Input features
 # Create the list of features below
-feature_names = ["LotArea", "YearBuilt", "1stFlrSF", "2ndFlrSF", "FullBath", "BedroomAbvGr", "TotRmsAbvGrd"]
+feature_names = ["Goals","Shots pg","Possession%","Pass%","AerialsWon"]
 
 # Select data corresponding to features in feature_names
-X = home_data[feature_names]
+X = football_data[feature_names]
 
 # Review data
 # print summary statistics from X
-#print(X.describe())
+print(X.describe())
 # print the top few lines
-#print(X.head())
+print(X.head())
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 #Decision Tree
@@ -31,16 +32,21 @@ X = home_data[feature_names]
 train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=1)
 
 #Build, Specify and fit Model
-iowa_model = DecisionTreeRegressor(random_state=1)
+model = DecisionTreeRegressor(random_state=1)
 
 # Fit the model
-iowa_model.fit(train_X, train_y)
-
+model.fit(train_X, train_y)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 #Make predictions with validation data
-val_predictions = iowa_model.predict(val_X)
+val_predictions = model.predict(val_X)
+
+# print the top few validation predictions
+print(val_predictions[0:5])
+# print the top few actual rating from validation data
+print(y.head())
+
 val_mae = mean_absolute_error(val_predictions, val_y)
-print("Validation MAE when not specifying max_leaf_nodes: {:,.0f}".format(val_mae))
+print("\nValidation MAE: {:,.3f}\n".format(val_mae))
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # Deal with underfitting & overfitting
 def get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y):
@@ -50,28 +56,28 @@ def get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y):
     mae = mean_absolute_error(val_y, preds_val)
     return(mae)
 
-candidate_max_leaf_nodes = [5, 25, 50, 100, 250, 500]
+candidate_max_leaf_nodes = [5, 10, 20, 25, 50, 75, 100]
 # Write loop to find the ideal tree size from candidate_max_leaf_nodes
 for i in candidate_max_leaf_nodes:
     my_mae = get_mae(i, train_X, val_X, train_y, val_y)
-    print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %d" %(i, my_mae))
+    print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %.3f" %(i, my_mae))
 
 '''
 Mean Absolute Error (MAE) = actual - predicted
 '''
 
-# Store the best value of max_leaf_nodes (it will be either 5, 25, 50, 100, 250 or 500)
-best_tree_size = 100
+# Store the best value of max_leaf_node
+best_tree_size = 5
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # Using best value for max_leaf_nodes
-iowa_model = DecisionTreeRegressor(max_leaf_nodes=best_tree_size, random_state=1)
-iowa_model.fit(train_X, train_y)
+final_model = DecisionTreeRegressor(max_leaf_nodes=best_tree_size, random_state=1)
+final_model.fit(X, y)
 
 #Make predictions with validation data
-val_predictions = iowa_model.predict(val_X)
-val_mae = mean_absolute_error(val_predictions, val_y)
-print("Validation MAE for best value of max_leaf_nodes: {:,.0f}".format(val_mae))
+val_predictions = final_model.predict(X)
+val_mae = mean_absolute_error(val_predictions, y)
+print("Validation MAE for best value of max_leaf_nodes: {:,.3f}".format(val_mae))
 
 #Validation
 #print(iowa_model.predict(X.head()))
