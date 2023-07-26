@@ -6,7 +6,7 @@ from IPython.display import display
 from tensorflow import keras
 from tensorflow.keras import layers, callbacks
 
-football_team = pd.read_csv('../input/football-teams-rankings-stats/Football teams.csv', usecols = ["Goals","Shots pg","Possession%","Pass%","AerialsWon", "Rating"])
+football_team = pd.read_csv('Football_teams.csv', usecols = ["Goals","Shots pg","Possession%","Pass%","AerialsWon", "Rating"])
 
 # Create training and validation splits
 df_train = football_team.sample(frac=0.7, random_state=0)
