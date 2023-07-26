@@ -29,16 +29,16 @@ print(X_train.shape)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 #Early stopping to deal with overfitting and underfitting
 early_stopping = callbacks.EarlyStopping(
-    min_delta=0.001, # minimium amount of change to count as an improvement
+    min_delta=0.1, # minimium amount of change to count as an improvement
     patience=5, # how many epochs to wait before stopping
     restore_best_weights=True,
 )
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # train the model 
 model = keras.Sequential([
-    layers.Dense(128, activation='relu', input_shape=[5]),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(64, activation='relu'),
+    layers.Dense(16, activation='relu', input_shape=[5]),
+    layers.Dense(16, activation='relu'),
+    layers.Dense(8, activation='relu'),
     layers.Dense(1),
 ])
 
